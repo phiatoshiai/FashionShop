@@ -19,8 +19,6 @@ router
 router
   .route('/login')
   .get(authCheckLogin, function(req, res) {
-    console.log('AAAAAAAAAAAa');
-    
     res.render('login');
   })
   .post(

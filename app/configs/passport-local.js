@@ -112,8 +112,7 @@ passport.use(
         const user = await User.findOne({
           email: email
         });
-        console.log(user);
-        
+
         if (lodash.isEmpty(email)) {
           return done(null, false, {
             message: 'Tài khoản này không tồn tại, vui lòng kiểm tra lại'

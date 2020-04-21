@@ -22,21 +22,24 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       
-      UserModel.findOne({ 'social.id': profile.id }).then(
+      UserModel.findOne({ 'social.id': profile.id , 'social.provider': 'google'}).then(
         (currentUser) => {
           if (currentUser) {
+            console.log("currentUser", currentUser)
             done(null, currentUser);
           } else {
+            console.log('AAAA', profile);
+            
             new UserModel({
-              firstname: profile.name.familyName,
-              lastname: profile.name.givenName,
+              firstName: profile.name.familyName,
+              lastName: profile.name.givenName,
               avatarUrl: profile.photos[0].value,
               email: profile.emails[0].value,
               password: null,
               roles: 'USER',
               social: {
                 provider: 'google',
-                googleId: profile.id,
+                id: profile.id,
               },
             })
               .save()
