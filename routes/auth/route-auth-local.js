@@ -1,7 +1,7 @@
 var express = require('express');
 var passport = require('passport');
 var router = express.Router();
-const { authCheck, authCheckLogout } = require('../../app/middlewares/auth-middlewares');
+const { authCheck, authCheckLogout, authCheckLogin } = require('../../app/middlewares/auth-middlewares');
 
 router
   .route('/register')
@@ -17,8 +17,10 @@ router
   );
 
 router
-  .route('/login', authCheck)
-  .get(authCheck, function(req, res) {
+  .route('/login')
+  .get(authCheckLogin, function(req, res) {
+    console.log('AAAAAAAAAAAa');
+    
     res.render('login');
   })
   .post(
@@ -29,9 +31,10 @@ router
     })
   );
 
-router.get('/logout', authCheckLogout, (req, res) => {
-  req.logout();
-  res.redirect('/');
+router.get('/logout', authCheckLogout, function(req, res) {
+  req.logout()
+    req.session = null;
+    res.redirect('/');
 });
 
 module.exports = router;

@@ -4,12 +4,10 @@ const keys = require('../../util/keys');
 const UserModel = require('../models/UserModel');
 
 passport.serializeUser(function (user, done) {
-  console.log('IIIIIII', user)
   done(null, user.id);
 });
 
 passport.deserializeUser(function (id, done) {
-  console.log('OOOOOOOO', user)
   User.findById(id, function (err, user) {
     done(err, user);
   });
@@ -23,10 +21,10 @@ passport.use(
       clientSecret: keys.GOOGLE.CLIENT_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
+      
       UserModel.findOne({ 'social.id': profile.id }).then(
         (currentUser) => {
           if (currentUser) {
-            console.log('is user BBBBBBBBBBBBBBBBBBB', profile);
             done(null, currentUser);
           } else {
             new UserModel({
@@ -43,7 +41,6 @@ passport.use(
             })
               .save()
               .then((newUser) => {
-                console.log('new user CCCCCCCCCCCCCCCCCC' + newUser);
                 done(null, newUser);
               });
           }

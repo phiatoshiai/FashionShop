@@ -19,11 +19,10 @@ mongoose.connection.on('error', function(err) {
   console.log('Lỗi kết nối đến CSDL: ' + err);
 });
 
-app.use(logger('combined'));
+// app.use(logger('combined'));
 
-app.engine('ejs', require('ejs-locals'));
 app.set('views', './app/views'); //khai báo thư mục chứa giao diện là folder views
-app.set('view engine', 'ejs');
+app.set('view engine', 'pug');
 
 app.use(cookieSession({
     maxAge: 24*60*60*1000,
@@ -40,14 +39,14 @@ app.use(flash());
 require('./routes/router-home')(app); //routes homepage
 require('./routes/web-admin-upload-image')(app); //routes upload image
 require('./app/configs/passport-google');
-require('./app/configs/passport-facebook');
+// require('./app/configs/passport-facebook');
 
 const localLogin = require('./routes/auth/route-auth-local'); //local login
 const googleLogin = require('./routes/auth/route-auth-google'); //google login
-const facebookLogin = require('./routes/auth/route-auth-facebook'); //facebook login
-const profileGoogle = require('./routes/profile-route');
+// const facebookLogin = require('./routes/auth/route-auth-facebook'); //facebook login
+// const profileGoogle = require('./routes/profile-route');
 
 app.use('/auth', localLogin);
 app.use('/auth', googleLogin);
-app.use('/auth', facebookLogin);
-app.use('/show', profileGoogle);
+// app.use('/auth', facebookLogin);
+// app.use('/show', profileGoogle);

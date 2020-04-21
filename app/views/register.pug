@@ -1,0 +1,41 @@
+doctype html
+html(lang="en")
+  head
+    title Framgia_tuts
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link#bootstrap-css(href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet")
+    script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js")
+    script(src="//code.jquery.com/jquery-1.11.1.min.js")
+  body
+    .container
+      .row.centered-form
+        .col-xs-12.col-sm-8.col-md-4.col-sm-offset-2.col-md-offset-4
+          .panel.panel-default
+            .panel-heading
+              h3.panel-title Register
+            .panel-body
+              form(role="form" action="/auth/register" method="post")
+                .row
+                  .col-xs-6.col-sm-6.col-md-6
+                    .form-group
+                      input#firstName.form-control.input-sm(type="text" name="firstName" placeholder="First Name")
+                  .col-xs-6.col-sm-6.col-md-6
+                    .form-group
+                      input#lastName.form-control.input-sm(type="text" name="lastName" placeholder="Last Name")
+                .form-group
+                  input#email.form-control.input-sm(type="email" name="email" placeholder="Email Address")
+                .form-group
+                  input#phone.form-control.input-sm(type="text" name="phone" placeholder="Phone Number")
+                .form-group
+                  input#address.form-control.input-sm(type="text" name="address" placeholder="Address")
+                .form-group
+                  input#gender.form-control.input-sm(type="text" name="gender" placeholder="Gender")
+                .row
+                  .col-xs-6.col-sm-6.col-md-6
+                    .form-group
+                      input#password.form-control.input-sm(type="password" name="password" placeholder="Password")
+                  .col-xs-6.col-sm-6.col-md-6
+                    .form-group
+                      input#password_confirmation.form-control.input-sm(type="password" name="password_confirmation" placeholder="Confirm Password")
+                input.btn.btn-info.btn-block(type="submit" value="Register")

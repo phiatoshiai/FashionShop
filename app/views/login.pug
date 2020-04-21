@@ -1,0 +1,28 @@
+doctype html
+html(lang="en")
+  head
+    title Framgia_tuts
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js")
+  body
+    .container
+      h2 Local Login
+      form(action="/auth/login" method="POST")
+        .form-group
+          label(for="email") Email:
+          input#email.form-control(type="email" placeholder="Enter email" name="email")
+        .form-group
+          label(for="password") Password:
+          input#password.form-control(type="password" placeholder="Enter password" name="password")
+        button.btn.btn-info(type="submit") Submit
+      div(style="margin-top: 30px;")
+        div
+          a.btn.btn-danger(href="http://localhost:8080/auth/google")
+            | Google Login
+        div(style="margin-top: 10px;")
+          a.btn.btn-primary(href="http://localhost:8080/auth/facebook")
+            | Facebook Login
