@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const auth = require('../app/middlewares/auth-google-middlewares');
+const { authCheck } = require('../app/middlewares/auth-middlewares');
 
-router.get('/', auth.authCheck, (req, res) => {
-    res.send(`Hello ${req.user.local.email}`)
-})
+router.get('/', (req, res) => {
+  res.send(`Hello ${req.user.email}`);
+});
 
 module.exports = router;

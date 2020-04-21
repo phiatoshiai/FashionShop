@@ -4,11 +4,11 @@ const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const session = require('express-session');
+// const session = require('express-session');
 const cookieSession =  require('cookie-session');
 const passport = require('passport');
 const flash = require('connect-flash');
-require('./app/configs/passport');
+require('./app/configs/passport-local');
 const keys = require('./util/keys');
 
 const app = express();
@@ -30,30 +30,24 @@ app.use(cookieSession({
     keys: [keys.SESSION.cookieKey]
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-/* Cấu hình passport */
-app.use(
-  session({
-    secret: 'ahihi',
-    resave: false,
-    saveUninitialized: false
-  })
-);
-app.use(flash());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
-require('./routes/web-admin-home-page')(app); //routes homepage
+
+require('./routes/router-home')(app); //routes homepage
 require('./routes/web-admin-upload-image')(app); //routes upload image
-const userRouter = require('./routes/web-admin-user');
-const googleLogin = require('./routes/route-auth-google'); //google login
-const passportSetup = require('./app/configs/passport-google');
+require('./app/configs/passport-google');
+require('./app/configs/passport-facebook');
+
+const localLogin = require('./routes/auth/route-auth-local'); //local login
+const googleLogin = require('./routes/auth/route-auth-google'); //google login
+const facebookLogin = require('./routes/auth/route-auth-facebook'); //facebook login
 const profileGoogle = require('./routes/profile-route');
 
-app.use('/nguoi-dung', userRouter);
+app.use('/auth', localLogin);
 app.use('/auth', googleLogin);
-app.use('/profile', profileGoogle);
+app.use('/auth', facebookLogin);
+app.use('/show', profileGoogle);
