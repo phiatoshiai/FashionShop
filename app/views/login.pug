@@ -19,6 +19,12 @@ html(lang="en")
           label(for="password") Password:
           input#password.form-control(type="password" placeholder="Enter password" name="password")
         button.btn.btn-info(type="submit") Submit
+
+      div(style="margin-top: 30px")
+        div
+          a.btn.btn-danger(href="http://localhost:8080/auth/register")
+            | Registor 
+        
       div(style="margin-top: 30px;")
         div
           a.btn.btn-danger(href="http://localhost:8080/auth/google")
@@ -26,3 +32,6 @@ html(lang="en")
         div(style="margin-top: 10px;")
           a.btn.btn-primary(href="http://localhost:8080/auth/facebook")
             | Facebook Login
+        
+      div(style="margin-top: 30px")
+        p.text-danger #{message}

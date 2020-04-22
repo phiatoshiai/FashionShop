@@ -39,14 +39,14 @@ app.use(flash());
 require('./routes/router-home')(app); //routes homepage
 require('./routes/web-admin-upload-image')(app); //routes upload image
 require('./app/configs/passport-google');
-// require('./app/configs/passport-facebook');
+require('./app/configs/passport-facebook');
 
 const localLogin = require('./routes/auth/route-auth-local'); //local login
 const googleLogin = require('./routes/auth/route-auth-google'); //google login
-// const facebookLogin = require('./routes/auth/route-auth-facebook'); //facebook login
+const facebookLogin = require('./routes/auth/route-auth-facebook'); //facebook login
 // const profileGoogle = require('./routes/profile-route');
 
 app.use('/auth', localLogin);
 app.use('/auth', googleLogin);
-// app.use('/auth', facebookLogin);
+app.use('/auth', facebookLogin);
 // app.use('/show', profileGoogle);

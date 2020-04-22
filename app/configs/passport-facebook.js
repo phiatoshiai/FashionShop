@@ -19,35 +19,34 @@ passport.use(
       callbackURL: '/auth/facebook/callback',
       clientID: '2970685959618529',
       clientSecret: '7cef0cfd94a0908baae51aa783adea45',
-      profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name']
+      profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'picture.type(large)']
     },
     async (accessToken, refreshToken, profile, done) => {
-    console.log("profile", profile)
-        // UserModel.findOne({ 'local.facebookId': profile.id }).then(currentUser => {
-        //   if (currentUser) {
-        //     console.log('is user', profile);
-        //     done(null, currentUser)
-        //   } else {
-        //     new UserModel({
-        //       info: {
-        //         firstname: profile.name.familyName || null,
-        //         lastname: profile.name.givenName || null,
-        //         imageUrl: profile.photos[0].value || null
-        //       },
-        //       local: {
-        //         facebookId: profile.id,
-        //         email: profile.emails[0].value || null,
-        //         password: '110859236255629276836'
-        //       }
-        //     })
-        //       .save()
-        //       .then(newUser => {
-        //         console.log('new user' + newUser);
-        //         done(null, newUser)
-
-        //       });
-        //   }
-        // });
+    const picture = `https://graph.facebook.com/${profile.id}/picture?width=200&height=200&access_token=${accessToken}`  
+      UserModel.findOne({ 'social.id': profile.id , 'social.provider': 'facebook'}).then(
+        (currentUser) => {
+          if (currentUser) {
+            done(null, currentUser);
+          } else {
+            new UserModel({
+              firstName: profile.name.familyName,
+              lastName: profile.name.givenName,
+              avatarUrl: picture,
+              email: profile.emails[0].value,
+              password: null,
+              roles: 'USER',
+              social: {
+                provider: 'facebook',
+                id: profile.id,
+              },
+            })
+              .save()
+              .then((newUser) => {
+                done(null, newUser);
+              });
+          }
+        }
+      );
     }
   )
 );

@@ -1,15 +1,20 @@
 const router = require('express').Router();
 const passport = require('passport');
 
-router.get('/facebook', passport.authenticate('facebook'));
+router.get(
+  '/facebook',
+  passport.authenticate('facebook', {
+    scope: ['public_profile'],
+    prompt : "select_account"
+  })
+);
 
 router.get(
   '/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  }
+  passport.authenticate('facebook', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+  })
 );
 
 module.exports = router;

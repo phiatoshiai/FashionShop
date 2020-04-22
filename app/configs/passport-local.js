@@ -113,7 +113,7 @@ passport.use(
           email: email
         });
 
-        if (lodash.isEmpty(email)) {
+        if (lodash.isEmpty(user)) {
           return done(null, false, {
             message: 'Tài khoản này không tồn tại, vui lòng kiểm tra lại'
           });
