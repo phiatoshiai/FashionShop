@@ -21,34 +21,31 @@ passport.use(
       clientSecret: keys.GOOGLE.CLIENT_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
-      
-      UserModel.findOne({ 'social.id': profile.id , 'social.provider': 'google'}).then(
-        (currentUser) => {
-          if (currentUser) {
-            console.log("currentUser", currentUser)
-            done(null, currentUser);
-          } else {
-            console.log('AAAA', profile);
-            
-            new UserModel({
-              firstName: profile.name.familyName,
-              lastName: profile.name.givenName,
-              avatarUrl: profile.photos[0].value,
-              email: profile.emails[0].value,
-              password: null,
-              roles: 'USER',
-              social: {
-                provider: 'google',
-                id: profile.id,
-              },
-            })
-              .save()
-              .then((newUser) => {
-                done(null, newUser);
-              });
-          }
+      UserModel.findOne({
+        'social.id': profile.id,
+        'social.provider': 'google',
+      }).then((currentUser) => {
+        if (currentUser) {
+          done(null, currentUser);
+        } else {
+          new UserModel({
+            firstName: profile.name.familyName,
+            lastName: profile.name.givenName,
+            avatarUrl: profile.photos[0].value,
+            email: profile.emails[0].value,
+            password: null,
+            roles: 'USER',
+            social: {
+              provider: 'google',
+              id: profile.id,
+            },
+          })
+            .save()
+            .then((newUser) => {
+              done(null, newUser);
+            });
         }
-      );
+      });
     }
   )
 );

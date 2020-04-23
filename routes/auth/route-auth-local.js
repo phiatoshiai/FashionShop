@@ -14,7 +14,7 @@ router
   })
   .post(
     passport.authenticate('local.register', {
-      successRedirect: '/',
+      successRedirect: '/show/profile',
       failureRedirect: '/auth/register',
       failureFlash: true,
     })
@@ -28,7 +28,7 @@ router
   })
   .post(
     passport.authenticate('local.login', {
-      successRedirect: '/',
+      successRedirect: '/show/profile',
       badRequestMessage: 'Xin vui lòng điền email và mật khẩu',
       failureRedirect: '/auth/login',
       failureFlash: true,

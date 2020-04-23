@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title Fashion Shop
+    title HOME
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
@@ -24,12 +24,10 @@ html(lang="en")
         ul.navbar-nav
         ul.navbar-nav
           if user
-            h3 Hello #{user}
             li.nav-item
-              a.navbar-brand(href="http://localhost:8080/auth/logout") Log-out
+              a.navbar-brand(href="http://localhost:8080/show/profile") Profile
           else
             li.nav-item
               a.navbar-brand(href="http://localhost:8080/auth/login") Login
             li.nav-item
               a.navbar-brand(href="http://localhost:8080/auth/register") Register
-      
