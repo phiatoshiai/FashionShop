@@ -1,5 +1,6 @@
 var express = require('express');
 var passport = require('passport');
+const jwt = require('jsonwebtoken');
 var router = express.Router();
 const {
   authCheck,

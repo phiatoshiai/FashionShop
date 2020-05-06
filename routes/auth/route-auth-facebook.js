@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 router.get(
   '/facebook',
@@ -9,6 +10,7 @@ router.get(
   })
 );
 
+
 router.get(
   '/facebook/callback',
   passport.authenticate('facebook', {
@@ -16,5 +18,6 @@ router.get(
     failureRedirect: '/auth/login',
   })
 );
+
 
 module.exports = router;

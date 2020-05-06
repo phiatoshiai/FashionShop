@@ -2,6 +2,7 @@ const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const keys = require('../../util/keys');
 const UserModel = require('../models/UserModel');
+const jwt = require('jsonwebtoken');
 
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -41,6 +42,14 @@ passport.use(
           currentUser.avatarUrl = picture;
           currentUser.email = profile.emails[0].value;
           currentUser.social.id = profile.id;
+          const payload = {
+            email: currentUser.email,
+            userName: `${currentUser.lastName} ${currentUser.firstName}`,
+            avatarUrl: currentUser.avatarUrl
+          }
+          console.log("payload", payload)
+          const token = jwt.sign({ payload }, 'do-may-biet');
+          currentUser.token = token;
           currentUser.save((err) => {
             if (err) {
               done(null, false);
@@ -49,7 +58,7 @@ passport.use(
             }
           });
         } else {
-          new UserModel({
+          let user = {
             firstName: profile.name.familyName,
             lastName: profile.name.givenName,
             avatarUrl: picture,
@@ -59,8 +68,17 @@ passport.use(
             social: {
               provider: 'facebook',
               id: profile.id,
-            },
-          })
+            }
+          }
+
+          const payload = {
+            email: user.email,
+            userName: `${user.lastName} ${user.firstName}`,
+            avatarUrl: user.avatarUrl
+          }
+          const token = jwt.sign({ payload }, 'do-may-biet');
+          user.token = token;
+          new UserModel(user)
             .save()
             .then((newUser) => {
               done(null, newUser);

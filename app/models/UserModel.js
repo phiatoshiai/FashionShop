@@ -16,7 +16,7 @@ var userSchema = new Schema({
     provider: { type: String },
     id: { type: String },
   },
-
+  token: { type: String },
   // Filtering
   activated: { type: Boolean, default: true },
   deleted: { type: Boolean, default: false },
@@ -25,7 +25,7 @@ var userSchema = new Schema({
   createdBy: { type: String },
   createdAt: { type: Date, default: Date.now },
   updatedBy: { type: String },
-  updatedAt: { type: Date, default: Date.now }
+  updatedAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('users', userSchema);
