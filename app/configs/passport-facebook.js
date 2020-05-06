@@ -13,7 +13,6 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
-//
 passport.use(
   new FacebookStrategy(
     {
