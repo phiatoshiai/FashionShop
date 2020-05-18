@@ -4,35 +4,38 @@ const User = require('../models/UserModel');
 const lodash = require('lodash');
 const bCrypt = require('bcrypt');
 const { slugifyString } = require('../../util/slugifyString');
+const jwt = require('jsonwebtoken');
+const keys = require('../../util/keys');
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
+passport.deserializeUser(function (id, done) {
+  User.findById(id, function (err, user) {
     done(err, user);
   });
 });
 
-var isValidPassword = function(user, password) {
+var isValidPassword = function (user, password) {
   return bCrypt.compareSync(password, user.password);
 };
 
-var createHash = function(password) {
+var createHash = function (password) {
   return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
 };
 
 var isValidInput = async (req, email, password, done) => {
   const inputUser = await User.findOne({
-    email: email
+    email: email,
   });
   if (lodash.isEmpty(inputUser)) {
     const data = converDataToResponse(req, email, password);
     return data;
   } else {
     return done(null, false, {
-      message: 'Email đã được sử dụng, vui lòng chọn email khác'
+      message: 'Email đã được sử dụng, vui lòng chọn email khác',
+      code: 401
     });
   }
 };
@@ -63,7 +66,7 @@ const converDataToResponse = (req, email, password) => {
   newUser.roles = 'USER';
   (newUser.social = {
     provider: 'local',
-    id: null
+    id: null,
   }),
     (newUser.slug = slugifyString(fullName));
   newUser.createdBy = holderId || null;
@@ -79,18 +82,20 @@ passport.use(
     {
       usernameField: 'email',
       passswordField: 'password',
-      passReqToCallback: true
+      passReqToCallback: true,
     },
     async (req, email, password, done) => {
       try {
         let newUser = await isValidInput(req, email, password, done);
-        newUser.save(err => {
-          if (err) {
-            return done(err);
-          } else {
-            return done(null, newUser);
-          }
-        });
+        if (!lodash.isEmpty(newUser)) {
+          newUser.save((err) => {
+            if (err) {
+              return done(err);
+            } else {
+              return done(null, newUser);
+            }
+          });
+        }
       } catch (err) {
         return done(err);
       }
@@ -105,27 +110,43 @@ passport.use(
     {
       usernameField: 'email',
       passwordField: 'password',
-      passReqToCallback: true
+      passReqToCallback: true,
     },
     async (req, email, password, done) => {
       try {
-        const user = await User.findOne({
-          email: email
+        const currentUser = await User.findOne({
+          email: email,
         });
 
-        if (lodash.isEmpty(user)) {
+        if (lodash.isEmpty(currentUser)) {
           return done(null, false, {
-            message: 'Tài khoản này không tồn tại, vui lòng kiểm tra lại'
+            message: 'Tài khoản hoặc mật khẩu không đúng, xin vui lòng kiểm tra lại',
+            code: 401
           });
         }
 
-        if (!isValidPassword(user, password)) {
+        if (!isValidPassword(currentUser, password)) {
           return done(null, false, {
-            message: 'Mật khẩu không đúng, vui lòng kiểm tra lại'
+            message: 'Tài khoản hoặc mật khẩu không đúng, xin vui lòng kiểm tra lại',
+            code: 401
           });
         }
 
-        return done(null, user);
+        const payload = {
+          email: currentUser.email,
+          userName: `${currentUser.lastName} ${currentUser.firstName}`,
+          avatarUrl: currentUser.avatarUrl,
+        };
+        const token = jwt.sign({ payload }, keys.JWT.KEY, { expiresIn: '24h' });
+        currentUser.token = token;
+        currentUser.save((err) => {
+          if (err) {
+            done(null, false);
+          } else {
+            req.token = token;
+            done(null, currentUser);
+          }
+        });
       } catch (err) {
         return done(err);
       }

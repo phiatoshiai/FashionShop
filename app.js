@@ -4,6 +4,7 @@ const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 // const session = require('express-session');
 const cookieSession =  require('cookie-session');
 const passport = require('passport');
@@ -30,6 +31,7 @@ app.use(cookieSession({
 }));
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -40,6 +42,7 @@ require('./routes/router-home')(app); //routes homepage
 require('./routes/web-admin-upload-image')(app); //routes upload image
 require('./app/configs/passport-google');
 require('./app/configs/passport-facebook');
+require('./routes/token/router-token')(app);
 
 const localLogin = require('./routes/auth/route-auth-local'); //local login
 const googleLogin = require('./routes/auth/route-auth-google'); //google login

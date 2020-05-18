@@ -45,10 +45,9 @@ passport.use(
           const payload = {
             email: currentUser.email,
             userName: `${currentUser.lastName} ${currentUser.firstName}`,
-            avatarUrl: currentUser.avatarUrl
-          }
-          console.log("payload", payload)
-          const token = jwt.sign({ payload }, 'do-may-biet');
+            avatarUrl: currentUser.avatarUrl,
+          };
+          const token = jwt.sign({ payload }, keys.JWT.KEY);
           currentUser.token = token;
           currentUser.save((err) => {
             if (err) {
@@ -68,21 +67,12 @@ passport.use(
             social: {
               provider: 'facebook',
               id: profile.id,
-            }
-          }
+            },
+          };
 
-          const payload = {
-            email: user.email,
-            userName: `${user.lastName} ${user.firstName}`,
-            avatarUrl: user.avatarUrl
-          }
-          const token = jwt.sign({ payload }, 'do-may-biet');
-          user.token = token;
-          new UserModel(user)
-            .save()
-            .then((newUser) => {
-              done(null, newUser);
-            });
+          new UserModel(user).save().then((newUser) => {
+            done(null, newUser);
+          });
         }
       });
     }

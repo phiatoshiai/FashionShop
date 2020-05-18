@@ -18,5 +18,9 @@ module.exports = {
 
   SESSION: {
     cookieKey: 'dobietday'
+  },
+
+  JWT: {
+    KEY: 'do-biet-day'
   }
 };

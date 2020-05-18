@@ -1,9 +1,8 @@
 var express = require('express');
 var passport = require('passport');
-const jwt = require('jsonwebtoken');
 var router = express.Router();
+const lodash = require('lodash');
 const {
-  authCheck,
   authCheckLogout,
   authCheckLogin,
 } = require('../../app/middlewares/auth-middlewares');
@@ -11,11 +10,17 @@ const {
 router
   .route('/register')
   .get(function (req, res) {
-    res.render('register');
+    let message = req.flash('error')[0];
+    if (!lodash.isEmpty(message)) {
+      res.json({
+        message: message,
+      });
+    }
+    res.render('register')
   })
   .post(
     passport.authenticate('local.register', {
-      successRedirect: '/show/profile',
+      successRedirect: '/auth/logout',
       failureRedirect: '/auth/register',
       failureFlash: true,
     })
@@ -25,11 +30,17 @@ router
   .route('/login')
   .get(authCheckLogin, function (req, res) {
     let message = req.flash('error')[0];
-    res.render('login', { message: message });
+    if (!lodash.isEmpty(message)) {
+      res.json({
+        message: message,
+        code: 401
+      });
+    }
+    res.render('login')
   })
   .post(
     passport.authenticate('local.login', {
-      successRedirect: '/show/profile',
+      successRedirect: '/sendToken',
       badRequestMessage: 'Xin vui lòng điền email và mật khẩu',
       failureRedirect: '/auth/login',
       failureFlash: true,

@@ -2,6 +2,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const keys = require('../../util/keys');
 const UserModel = require('../models/UserModel');
+const jwt = require('jsonwebtoken');
 
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -26,7 +27,25 @@ passport.use(
         'social.provider': 'google',
       }).then((currentUser) => {
         if (currentUser) {
-          done(null, currentUser);
+          currentUser.firstName = profile.name.familyName;
+          currentUser.lastName = profile.name.givenName;
+          currentUser.avatarUrl = profile.photos[0].value;
+          currentUser.email = profile.emails[0].value;
+          currentUser.social.id = profile.id;
+          const payload = {
+            email: currentUser.email,
+            userName: `${currentUser.lastName} ${currentUser.firstName}`,
+            avatarUrl: currentUser.avatarUrl,
+          };
+          const token = jwt.sign({ payload }, keys.JWT.KEY, { expiresIn: '24h' });
+          currentUser.token = token;
+          currentUser.save((err) => {
+            if (err) {
+              done(null, false);
+            } else {
+              done(null, currentUser);
+            }
+          });
         } else {
           new UserModel({
             firstName: profile.name.familyName,

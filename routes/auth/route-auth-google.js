@@ -1,15 +1,20 @@
 const router = require('express').Router();
 const passport = require('passport');
-// const { authCheck, authCheckLogout } = require('../../app/middlewares/auth-middlewares');
+const { get } = require('lodash');
 
-router.get('/google', passport.authenticate('google', {
+router.get(
+  '/google',
+  passport.authenticate('google', {
     scope: ['profile', 'email'],
-    prompt : "select_account"
-}))
+    prompt: 'select_account',
+  })
+);
 
 router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-   res.redirect('/show/profile')
-    
-})
+  const accessToken = get(req, 'user.token');
+  res.json({
+    accessToken: accessToken,
+  });
+});
 
 module.exports = router;
