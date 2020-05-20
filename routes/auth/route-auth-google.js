@@ -12,9 +12,7 @@ router.get(
 
 router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
   const accessToken = get(req, 'user.token');
-  res.json({
-    accessToken: accessToken,
-  });
+  res.redirect("http://localhost:3000/saveToken?token=" + accessToken);
 });
 
 module.exports = router;
