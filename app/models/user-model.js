@@ -11,11 +11,17 @@ var userSchema = new Schema({
   gender: { type: String },
   address: { type: String },
   avatarUrl: { type: String },
+  point: { type: Number },
+  refer: {
+    customer: Schema.Types.ObjectId,
+    referDate: { type: Date },
+  },
   roles: [String],
   social: {
     provider: { type: String },
     id: { type: String },
   },
+  reject: { type: Number },
   token: { type: String },
   // Filtering
   activated: { type: Boolean, default: true },

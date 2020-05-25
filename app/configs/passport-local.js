@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('../models/UserModel');
+const User = require('../models/user-model');
 const lodash = require('lodash');
 const bCrypt = require('bcrypt');
 const { slugifyString } = require('../../util/slugifyString');
