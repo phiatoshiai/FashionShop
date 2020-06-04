@@ -5,18 +5,17 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
-// const session = require('express-session');
-const cookieSession =  require('cookie-session');
+const cookieSession = require('cookie-session');
 const passport = require('passport');
 const flash = require('connect-flash');
-require('./app/configs/passport-local');
 const keys = require('./util/keys');
+const { checkToken, isAdmin } = require('./app/middlewares/de-token-middlewares');
 
 const app = express();
 app.use(cors());
 const port = process.env.PORT || 8080;
 mongoose.connect('mongodb://localhost:27017/sell');
-mongoose.connection.on('error', function(err) {
+mongoose.connection.on('error', function (err) {
   console.log('Lỗi kết nối đến CSDL: ' + err);
 });
 
@@ -25,10 +24,12 @@ mongoose.connection.on('error', function(err) {
 app.set('views', './app/views'); //khai báo thư mục chứa giao diện là folder views
 app.set('view engine', 'pug');
 
-app.use(cookieSession({
-  maxAge: 24*60*60*1000,
-  keys: [keys.SESSION.cookieKey]
-}));
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [keys.SESSION.cookieKey],
+  })
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -36,21 +37,22 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-
-require('./routes/router-home')(app); //routes homepage
-require('./routes/web-admin-upload-image')(app); //routes upload image
+require('./routes/home-routes')(app); //routes homepage
+require('./routes/upload-image-routes')(app); //routes upload image
 require('./app/configs/passport-google');
 require('./app/configs/passport-facebook');
-require('./routes/token/router-token')(app);
+require('./routes/token-routes')(app);
 
-const localLogin = require('./routes/auth/route-auth-local'); //local login
-const googleLogin = require('./routes/auth/route-auth-google'); //google login
-const facebookLogin = require('./routes/auth/route-auth-facebook'); //facebook login
-const profile = require('./routes/profile-route');
+const localLogin = require('./routes/auth-local-routes'); //local login
+const googleLogin = require('./routes/auth-google-routes'); //google login
+const facebookLogin = require('./routes/auth-facebook-routes'); //facebook login
+const profile = require('./routes/profile-routes');
+const product = require('./routes/product-routes');
 
 app.use('/auth', localLogin);
 app.use('/auth', googleLogin);
 app.use('/auth', facebookLogin);
 app.use('/show', profile);
+app.use('/product', checkToken, isAdmin, product);
 
 app.listen(port, () => console.log('%c port', 'color: #f2ceb6', port));

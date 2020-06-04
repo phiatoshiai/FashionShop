@@ -1,7 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const keys = require('../../util/keys');
-const UserModel = require('../models/UserModel');
+const UserModel = require('../models/user-model');
 const jwt = require('jsonwebtoken');
 
 passport.serializeUser(function (user, done) {
@@ -36,8 +36,11 @@ passport.use(
             email: currentUser.email,
             userName: `${currentUser.lastName} ${currentUser.firstName}`,
             avatarUrl: currentUser.avatarUrl,
+            roles: currentUser.roles,
           };
-          const token = jwt.sign({ payload }, keys.JWT.KEY, { expiresIn: '24h' });
+          const token = jwt.sign({ payload }, keys.JWT.KEY, {
+            expiresIn: 60 * 60,
+          });
           currentUser.token = token;
           currentUser.save((err) => {
             if (err) {

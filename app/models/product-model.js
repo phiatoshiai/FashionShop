@@ -10,6 +10,7 @@ var productSchema = new Schema({
   code: { type: String },
   origin: { type: String },
   pictureUrl: [{ type: String }],
+  description:  { type: String},
   // Filtering
   activated: { type: Boolean, default: true },
   deleted: { type: Boolean, default: false },

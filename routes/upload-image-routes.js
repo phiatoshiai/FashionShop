@@ -1,5 +1,5 @@
 'use strict';
-const ControllerUpload = require('../app/controllers/ControllerUpload');
+const ControllerUpload = require('../app/controllers/upload-image-controller');
 const uploadMulter = require('../app/models/ModelMulter');
 
 module.exports = function(app) {

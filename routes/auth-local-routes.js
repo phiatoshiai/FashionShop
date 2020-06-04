@@ -2,13 +2,11 @@ var express = require('express');
 var passport = require('passport');
 var router = express.Router();
 const lodash = require('lodash');
-const UserModel = require('../../app/models/user-model');
+const UserModel = require('../app/models/user-model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {
-  authCheckLogout,
-  authCheckLogin,
-} = require('../../app/middlewares/auth-middlewares');
+const keys = require('../util/keys');
+const { authCheckLogout } = require('../app/middlewares/auth-middlewares');
 
 router
   .route('/register')
@@ -31,16 +29,21 @@ router
 
 router.route('/login').post((req, res) => {
   const { email, password } = req.body;
-  UserModel.findOne({ email }, 'username password email')
-    .then((user) => {
-      if (!user) res.status(400).send({ msg: 'Tên đăng nhập không tồn tại' });
+  UserModel.findOne({ email })
+    .then((currentUser) => {
+      if (!currentUser)
+        res.status(400).send({ msg: 'Tên đăng nhập không tồn tại' });
       else {
-        if (bcrypt.compareSync(password, user.password)) {
-          const accessToken = jwt.sign(
-            { email },
-            "#$%&&*MySecretKey123@#$%&&*",
-            { expiresIn: 60*60 }
-          );
+        if (bcrypt.compareSync(password, currentUser.password)) {
+          const payload = {
+            email: currentUser.email,
+            userName: `${currentUser.lastName} ${currentUser.firstName}`,
+            avatarUrl: currentUser.avatarUrl,
+            roles: currentUser.roles,
+          };
+          const accessToken = jwt.sign({ payload }, keys.JWT.KEY, {
+            expiresIn: 60 * 60,
+          });
           res.status(200).send({ accessToken });
         } else {
           res.status(401).send({ msg: 'Mật khẩu không đúng' });
@@ -48,8 +51,7 @@ router.route('/login').post((req, res) => {
       }
     })
     .catch((err) => {
-      console.log('ERR', err);
-      res.status(500).send(err);
+      res.status(500).send({msg: err.message});
     });
 });
 
