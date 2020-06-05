@@ -7,16 +7,16 @@ const Promise = require('bluebird');
 
 async function validateInputData(req, res, next) {
   try {
-    const { name, code } = req.body;
-    await validateName(name);
-    await validateCode(code);
+    const { name, code, _id } = req.body;
+    await validateName(name, _id);
+    await validateCode(code, _id);
     return next();
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
 } //validate input data
 
-async function validateName(name) {
+async function validateName(name, _id) {
   if (isEmpty(name)) {
     return Promise.reject(new Error('Xin vui lòng nhập tên sản phẩm'));
   } else {
@@ -33,8 +33,27 @@ async function validateName(name) {
     }
 
     //Tên trùng lặp
-    const productDB = await ProductModel.findOne({ slug: slug });
-    if (!isEmpty(productDB)) {
+    let query = {
+      slug: slug,
+      activated: true,
+      deleted: false,
+    };
+    if (!isEmpty(_id)) {
+      query = {
+        slug: slug,
+        _id: _id,
+        activated: true,
+        deleted: false,
+      };
+    }
+    const productDB = await ProductModel.find(query);
+    if (!isEmpty(productDB) && isEmpty(_id)) {
+      return Promise.reject(
+        new Error('Tên sản phẩm trùng lặp, xin vui lòng nhập tên khác')
+      );
+    }
+
+    if (!isEmpty(productDB) && !isEmpty(_id) && productDB.length > 1) {
       return Promise.reject(
         new Error('Tên sản phẩm trùng lặp, xin vui lòng nhập tên khác')
       );
@@ -42,7 +61,7 @@ async function validateName(name) {
   }
 } //validate product name
 
-async function validateCode(code) {
+async function validateCode(code, _id) {
   if (isEmpty(code)) {
     return Promise.reject(new Error('Xin vui lòng nhập mã code sản phẩm'));
   } else {
@@ -58,8 +77,27 @@ async function validateCode(code) {
     }
 
     //Code trùng lặp
-    const productDB = await ProductModel.findOne({ code: code });
-    if (!isEmpty(productDB)) {
+    let query = {
+      code: code,
+      activated: true,
+      deleted: false,
+    };
+    if (!isEmpty(_id)) {
+      query = {
+        code: code,
+        _id: _id,
+        activated: true,
+        deleted: false,
+      };
+    }
+    const productDB = await ProductModel.count({ query });
+    if (!isEmpty(productDB) && isEmpty(_id)) {
+      return Promise.reject(
+        new Error('Mã code sản phẩm trùng lặp, xin vui lòng nhập mã khác')
+      );
+    }
+
+    if (!isEmpty(productDB) && !isEmpty(_id) && productDB.length > 1) {
       return Promise.reject(
         new Error('Mã code sản phẩm trùng lặp, xin vui lòng nhập mã khác')
       );

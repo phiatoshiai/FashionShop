@@ -53,6 +53,7 @@ app.use('/auth', localLogin);
 app.use('/auth', googleLogin);
 app.use('/auth', facebookLogin);
 app.use('/show', profile);
-app.use('/product', checkToken, isAdmin, product);
+// app.use('/product', checkToken, isAdmin, product);
+app.use('/product', product);
 
 app.listen(port, () => console.log('%c port', 'color: #f2ceb6', port));
