@@ -7,5 +7,6 @@ const {validateInputData} = require('../app/middlewares/product-middlewares');
 router.post('/create', validateInputData, ProductController.createProduct);
 router.post('/update', validateInputData, ProductController.updateProduct);
 router.get('/getById/:id', ProductController.getProductById);
+router.get('/getAllProduct', ProductController.getAllProduct);
 
 module.exports = router;
