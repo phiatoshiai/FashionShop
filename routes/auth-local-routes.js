@@ -36,6 +36,7 @@ router.route('/login').post((req, res) => {
       else {
         if (bcrypt.compareSync(password, currentUser.password)) {
           const payload = {
+            holderId: currentUser._id,
             email: currentUser.email,
             userName: `${currentUser.lastName} ${currentUser.firstName}`,
             avatarUrl: currentUser.avatarUrl,

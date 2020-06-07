@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 var billSchema = new Schema({
   products: [
     {
-      id: Schema.Types.ObjectId,
+      id: { type: Schema.Types.ObjectId, ref: 'products' },
       name: { type: String },
       pcs: { type: String },
       unit: { type: String },
@@ -14,7 +14,7 @@ var billSchema = new Schema({
     },
   ],
   customer: {
-    id: Schema.Types.ObjectId,
+    id: { type: Schema.Types.ObjectId, ref: 'users' },
     name: { type: String },
     address: { type: String },
     phoneNumber: { type: String },

@@ -2,49 +2,39 @@
 const { isEmpty } = require('lodash');
 const ProductModel = require('../models/product-model');
 const constants = require('../../util/constants');
-const slugify = require('slugify');
+const { slugifyString } = require('../../util/slugifyString');
+const { findSpecialWord } = require('../../util/find-special-word');
 const Promise = require('bluebird');
 
-async function validateInputData(req, res, next) {
+async function validateInputDataProduct(req, res, next) {
   try {
     const { name, code, _id } = req.body;
     await validateName(name, _id);
     await validateCode(code, _id);
-    return next();
+    next();
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
 } //validate input data
 
 async function validateName(name, _id) {
+  name = name.trim();
   if (isEmpty(name)) {
     return Promise.reject(new Error('Xin vui lòng nhập tên sản phẩm'));
   } else {
-    name = name.trim();
-    if (isEmpty(name)) {
-      return Promise.reject(new Error('Xin vui lòng nhập tên sản phẩm'));
-    }
-
     //Tên không có kí tự đặt biệt
-    const regx = constants.REGEX_PRODUCT_NAME;
-    const slug = slugify(name, { lower: true });
-    if (!regx.test(slug)) {
-      return Promise.reject(new Error('Tên sản phẩm không hợp lệ'));
+    if (!findSpecialWord(name)) {
+      return Promise.reject(
+        new Error('Tên sản phẩm không được chứa kí tự đặt biệt')
+      );
     }
 
     //Tên trùng lặp
-    let query = {
-      slug: slug,
-      activated: true,
-      deleted: false,
+    const query = {
+      $and: [{ deleted: false, activated: true, slug: slugifyString(name) }],
     };
     if (!isEmpty(_id)) {
-      query = {
-        slug: slug,
-        _id: _id,
-        activated: true,
-        deleted: false,
-      };
+      query['$and'].push({ _id: _id });
     }
     const productDB = await ProductModel.find(query);
     if (!isEmpty(productDB) && isEmpty(_id)) {
@@ -62,12 +52,15 @@ async function validateName(name, _id) {
 } //validate product name
 
 async function validateCode(code, _id) {
+  code = code.trim();
   if (isEmpty(code)) {
     return Promise.reject(new Error('Xin vui lòng nhập mã code sản phẩm'));
   } else {
-    code = code.trim();
-    if (isEmpty(code)) {
-      return Promise.reject(new Error('Xin vui lòng nhập mã code sản phẩm'));
+    //Code không có kí tự đặt biệt
+    if (!findSpecialWord(code, 'code')) {
+      return Promise.reject(
+        new Error('Mã code không được chứa kí tự đặt biệt')
+      );
     }
 
     //Code: IN HOA,số ,_, -
@@ -77,20 +70,13 @@ async function validateCode(code, _id) {
     }
 
     //Code trùng lặp
-    let query = {
-      code: code,
-      activated: true,
-      deleted: false,
+    const query = {
+      $and: [{ deleted: false, activated: true, code: code }],
     };
     if (!isEmpty(_id)) {
-      query = {
-        code: code,
-        _id: _id,
-        activated: true,
-        deleted: false,
-      };
+      query['$and'].push({ _id: _id });
     }
-    const productDB = await ProductModel.count({ query });
+    const productDB = await ProductModel.find(query);
     if (!isEmpty(productDB) && isEmpty(_id)) {
       return Promise.reject(
         new Error('Mã code sản phẩm trùng lặp, xin vui lòng nhập mã khác')
@@ -106,5 +92,5 @@ async function validateCode(code, _id) {
 } //validate product code
 
 module.exports = {
-  validateInputData: validateInputData,
+  validateInputData: validateInputDataProduct,
 };

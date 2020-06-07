@@ -5,7 +5,6 @@ var Schema = mongoose.Schema;
 
 var categorySchema = new Schema({
   name: { type: String },
-  products: [Schema.Types.ObjectId],
   // Filtering
   activated: { type: Boolean, default: true },
   deleted: { type: Boolean, default: false },
@@ -16,5 +15,5 @@ var categorySchema = new Schema({
   updatedBy: { type: String },
   updatedAt: { type: Date, default: Date.now },
 });
-
-module.exports = mongoose.model('categories', categorySchema);
+const CategoryModel = mongoose.model('categories', categorySchema);
+module.exports = CategoryModel;

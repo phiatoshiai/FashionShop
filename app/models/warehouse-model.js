@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 var wareHouseSchema = new Schema({
   name: { type: String },
-  product: Schema.Types.ObjectId,
+  product: { type: Schema.Types.ObjectId, ref: 'products' },
   pcs: { type: Number, default: 0},
   selled: { type: Number, default: 0},
   rest: { type: Number, default: 0},

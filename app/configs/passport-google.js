@@ -33,6 +33,7 @@ passport.use(
           currentUser.email = profile.emails[0].value;
           currentUser.social.id = profile.id;
           const payload = {
+            holderId: currentUser._id,
             email: currentUser.email,
             userName: `${currentUser.lastName} ${currentUser.firstName}`,
             avatarUrl: currentUser.avatarUrl,

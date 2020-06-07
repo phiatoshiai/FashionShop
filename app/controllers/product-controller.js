@@ -1,5 +1,5 @@
 'use strict';
-const { isEmpty } = require('lodash');
+const { isEmpty, get } = require('lodash');
 const ProductModel = require('../models/product-model');
 const constants = require('../../util/constants');
 const { slugifyString } = require('../../util/slugifyString');
@@ -9,10 +9,15 @@ require('moment-timezone');
 module.exports = {
   //create Product
   createProduct: async (req, res) => {
-    const { name, color, material, origin } = req.body;
-    const { pictureUrl, description } = req.body;
+    const { name, code, color, material, origin } = req.body;
+    const { pictureUrl, description, category } = req.body;
     let newProduct = new ProductModel();
     newProduct.name = name;
+    newProduct.updatedBy =
+      get(req.dataUser, 'payload.holderId') || 'Không tồn tại';
+    newProduct.createdBy =
+      get(req.dataUser, 'payload.holderId') || 'Không tồn tại';
+    newProduct.category = category;
     newProduct.code = code;
     newProduct.color = color || null;
     newProduct.material = material || null;
@@ -40,7 +45,7 @@ module.exports = {
       const id = req.params.id;
       const productById = await ProductModel.findOne({ _id: id });
       if (!isEmpty(productById)) {
-        return res.status(200).json({ productById });
+        return res.status(200).json(productById);
       } else {
         return res.status(200).json({ _id: 123 });
       }
@@ -56,15 +61,17 @@ module.exports = {
         .tz(constants.TIMEZONE_DEFAULT)
         .utc()
         .toDate();
+      req.body.updatedBy =
+        get(req.dataUser, 'payload.holderId') || 'Không tồn tại';
       await ProductModel.update(req.body, (err) => {
         if (!isEmpty(err)) {
           return res.status(500).json({ msg: err.message });
         }
       });
 
-      const ProductDB = await ProductModel.findOne({ _id: req.body._id });
-      if (!isEmpty(ProductDB)) {
-        return res.status(200).json({ ProductDB });
+      const productDB = await ProductModel.findOne({ _id: req.body._id });
+      if (!isEmpty(productDB)) {
+        return res.status(200).json(productDB);
       }
       return res.status(200).json({ _id: 123 });
     } catch (err) {
@@ -80,7 +87,7 @@ module.exports = {
       };
 
       const params = req.query;
-      const { q, color, material, origin } = params;
+      const { q, color, material, origin, category } = params;
       const perPage = parseInt(params.perPage) || constants.LIMIT_DEFAULT;
       const page = parseInt(params.page) || 1;
       if (!isEmpty(q)) {
@@ -107,9 +114,18 @@ module.exports = {
         query['$and'].push({ origin: origin });
       }
 
-      console.log('aaaaaaa', query);
+      if (!isEmpty(category)) {
+        query['$and'].push({ category: category });
+      }
 
       const listProduct = await ProductModel.find(query)
+        .populate({
+          path: 'category',
+          select: '_id name slug',
+        })
+        .select({
+          __v: 0,
+        })
         .skip(perPage * page - perPage)
         .limit(perPage)
         .sort({ createdAt: -1 });

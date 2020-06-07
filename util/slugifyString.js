@@ -1,12 +1,12 @@
-const lodash = require('lodash');
+const { isString, isEmpty } = require('lodash');
 const slugify = require('@sindresorhus/slugify');
 
 module.exports = {
-  slugifyString: inputString => {
+  slugifyString: (inputString) => {
     let slug = null;
-    if (!lodash.isEmpty(inputString) && lodash.isString(inputString)) {
+    if (!isEmpty(inputString) && isString(inputString)) {
       slug = slugify(inputString.toLowerCase());
     }
     return slug;
-  }
+  },
 };

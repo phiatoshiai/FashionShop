@@ -4,9 +4,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var billHistorySchema = new Schema({
-  bill: Schema.Types.ObjectId,
-  customer: Schema.Types.ObjectId,
-  products: [Schema.Types.ObjectId],
+  bill: { type: Schema.Types.ObjectId, ref: 'bills' },
+  customer: { type: Schema.Types.ObjectId, ref: 'users' },
+  products: [{ type: Schema.Types.ObjectId, ref: 'products' }],
   status: { type: String },
   reason: { type: String },
   pay: { type: String },

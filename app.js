@@ -1,7 +1,5 @@
 const express = require('express');
 const logger = require('morgan');
-const path = require('path');
-const http = require('http');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -9,7 +7,10 @@ const cookieSession = require('cookie-session');
 const passport = require('passport');
 const flash = require('connect-flash');
 const keys = require('./util/keys');
-const { checkToken, isAdmin } = require('./app/middlewares/de-token-middlewares');
+const {
+  checkToken,
+  isAdmin,
+} = require('./app/middlewares/de-token-middlewares');
 
 const app = express();
 app.use(cors());
@@ -19,10 +20,7 @@ mongoose.connection.on('error', function (err) {
   console.log('Lỗi kết nối đến CSDL: ' + err);
 });
 
-// app.use(logger('combined'));
-
-app.set('views', './app/views'); //khai báo thư mục chứa giao diện là folder views
-app.set('view engine', 'pug');
+app.use(logger('combined'));
 
 app.use(
   cookieSession({
@@ -48,12 +46,13 @@ const googleLogin = require('./routes/auth-google-routes'); //google login
 const facebookLogin = require('./routes/auth-facebook-routes'); //facebook login
 const profile = require('./routes/profile-routes');
 const product = require('./routes/product-routes');
+const category = require('./routes/category-routes');
 
 app.use('/auth', localLogin);
 app.use('/auth', googleLogin);
 app.use('/auth', facebookLogin);
 app.use('/show', profile);
-// app.use('/product', checkToken, isAdmin, product);
-app.use('/product', product);
+app.use('/product', checkToken, isAdmin, product);
+app.use('/category', checkToken, isAdmin, category);
 
 app.listen(port, () => console.log('%c port', 'color: #f2ceb6', port));
