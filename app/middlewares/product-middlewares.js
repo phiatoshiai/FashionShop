@@ -3,7 +3,7 @@ const { isEmpty } = require('lodash');
 const ProductModel = require('../models/product-model');
 const constants = require('../../util/constants');
 const { slugifyString } = require('../../util/slugifyString');
-const { findSpecialWord } = require('../../util/find-special-word');
+const { isSpecialWord } = require('../../util/validation');
 const Promise = require('bluebird');
 
 async function validateInputDataProduct(req, res, next) {
@@ -23,7 +23,7 @@ async function validateName(name, _id) {
     return Promise.reject(new Error('Xin vui lòng nhập tên sản phẩm'));
   } else {
     //Tên không có kí tự đặt biệt
-    if (!findSpecialWord(name)) {
+    if (!isSpecialWord(name)) {
       return Promise.reject(
         new Error('Tên sản phẩm không được chứa kí tự đặt biệt')
       );
@@ -57,7 +57,7 @@ async function validateCode(code, _id) {
     return Promise.reject(new Error('Xin vui lòng nhập mã code sản phẩm'));
   } else {
     //Code không có kí tự đặt biệt
-    if (!findSpecialWord(code, 'code')) {
+    if (!isSpecialWord(code, 'code')) {
       return Promise.reject(
         new Error('Mã code không được chứa kí tự đặt biệt')
       );

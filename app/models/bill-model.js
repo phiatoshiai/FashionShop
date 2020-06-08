@@ -6,15 +6,15 @@ var Schema = mongoose.Schema;
 var billSchema = new Schema({
   products: [
     {
-      id: { type: Schema.Types.ObjectId, ref: 'products' },
+      id: { type: Schema.Types.ObjectId, ref: 'ProductModel' },
       name: { type: String },
-      pcs: { type: String },
+      qty: { type: String },
       unit: { type: String },
       amount: { type: Number },
     },
   ],
   customer: {
-    id: { type: Schema.Types.ObjectId, ref: 'users' },
+    id: { type: Schema.Types.ObjectId, ref: 'UserModel' },
     name: { type: String },
     address: { type: String },
     phoneNumber: { type: String },
@@ -56,4 +56,4 @@ var billSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('bills', billSchema);
+module.exports = mongoose.model('BillModel', billSchema, 'bills');

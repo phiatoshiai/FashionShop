@@ -1,7 +1,7 @@
-const { isString, isEmpty, find, filter } = require('lodash');
+const { isString, isEmpty, find, filter, isNumber } = require('lodash');
 
 module.exports = {
-  findSpecialWord: (inputString, action) => {
+  isSpecialWord: (inputString, action) => {
     let special = '~!@#$%^&*+=|{}":;<>,.?';
 
     if (action === 'code') {
@@ -19,5 +19,12 @@ module.exports = {
       }
     }
     return true;
+  },
+
+  isNumberField: (input) => {
+    if (!isNumber(input) || input < 0) {
+      return -1;
+    }
+    return 1;
   },
 };

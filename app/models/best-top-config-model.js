@@ -3,14 +3,17 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var wareHouseSchema = new Schema({
+var bestTopSchema = new Schema({
   name: { type: String },
-  product: { type: Schema.Types.ObjectId, ref: 'ProductModel' },
-  qty: { type: Number, default: 0 },
-  selled: { type: Number, default: 0 },
-  rest: { type: Number, default: 0 },
-  discount: { type: Number, default: 0 },
-  price: { type: Number },
+  limit: { type: Number, default: 5 },
+  type: {
+    type: String,
+    enum: [
+      'cb7d9544-41b3-4888-803d-ff88894b905a', // category
+      '1760dc79-fcbd-46ea-954e-f9b7c7a05da1', // all product
+    ],
+  },
+  category: { type: Schema.Types.ObjectId, ref: 'CategoryModel' },
   // Filtering
   activated: { type: Boolean, default: true },
   deleted: { type: Boolean, default: false },
@@ -22,6 +25,4 @@ var wareHouseSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-const WarehouseModel = mongoose.model('WarehouseModel', wareHouseSchema, 'ware-house');
-
-module.exports = WarehouseModel;
+module.exports = mongoose.model('BestTopConfigModel', bestTopSchema, 'best-top-config');

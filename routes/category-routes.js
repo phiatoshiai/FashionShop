@@ -9,6 +9,6 @@ const {
 router.post('/create', validateInputData, CategoryController.createCategory);
 router.put('/update', validateInputData, CategoryController.updateCategory);
 router.get('/getById/:id', CategoryController.getCategoryById);
-router.get('/getAllCategory', CategoryController.getAllCategory);
+router.get('/getAll', CategoryController.getAllCategory);
 
 module.exports = router;

@@ -25,4 +25,4 @@ var aboutSchema = new Schema({
   updatedAt: { type: Date },
 });
 
-module.exports = mongoose.model('abouts', aboutSchema);
+module.exports = mongoose.model('AboutModel', aboutSchema, 'abouts');

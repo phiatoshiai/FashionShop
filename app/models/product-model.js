@@ -11,7 +11,7 @@ var productSchema = new Schema({
   origin: { type: String },
   pictureUrl: [{ type: String }],
   description: { type: String },
-  category: { type: Schema.Types.ObjectId, ref: 'categories' },
+  category: { type: Schema.Types.ObjectId, ref: 'CategoryModel' },
   // Filtering
   activated: { type: Boolean, default: true },
   deleted: { type: Boolean, default: false },
@@ -23,5 +23,5 @@ var productSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-const ProductModel = mongoose.model('products', productSchema);
+const ProductModel = mongoose.model('ProductModel', productSchema, 'products');
 module.exports = ProductModel;

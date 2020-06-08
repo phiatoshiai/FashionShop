@@ -2,6 +2,7 @@
 const { isEmpty } = require('lodash');
 const CategoryModel = require('../models/category-model');
 const { slugifyString } = require('../../util/slugifyString');
+const { isSpecialWord } = require('../../util/validation');
 const Promise = require('bluebird');
 
 async function validateInputDataCategory(req, res, next) {
@@ -20,7 +21,7 @@ async function validateName(name, _id) {
     return Promise.reject(new Error('Xin vui lòng nhập tên danh mục'));
   } else {
     //Tên không có kí tự đặt biệt
-    if (!findSpecialWord(name)) {
+    if (!isSpecialWord(name)) {
       return Promise.reject(
         new Error('Tên danh mục không được chứa kí tự đặt biệt')
       );

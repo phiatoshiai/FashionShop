@@ -4,9 +4,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var billHistorySchema = new Schema({
-  bill: { type: Schema.Types.ObjectId, ref: 'bills' },
-  customer: { type: Schema.Types.ObjectId, ref: 'users' },
-  products: [{ type: Schema.Types.ObjectId, ref: 'products' }],
+  bill: { type: Schema.Types.ObjectId, ref: 'BillModel' },
+  customer: { type: Schema.Types.ObjectId, ref: 'UserModel' },
+  products: [{ type: Schema.Types.ObjectId, ref: 'ProductModel' }],
   status: { type: String },
   reason: { type: String },
   pay: { type: String },
@@ -20,4 +20,4 @@ var billHistorySchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('bill-histories', billHistorySchema);
+module.exports = mongoose.model('BillHistoryModel', billHistorySchema, 'bill-histories');

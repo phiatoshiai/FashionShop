@@ -20,7 +20,7 @@ mongoose.connection.on('error', function (err) {
   console.log('Lỗi kết nối đến CSDL: ' + err);
 });
 
-app.use(logger('combined'));
+// app.use(logger('combined'));
 
 app.use(
   cookieSession({
@@ -47,6 +47,9 @@ const facebookLogin = require('./routes/auth-facebook-routes'); //facebook login
 const profile = require('./routes/profile-routes');
 const product = require('./routes/product-routes');
 const category = require('./routes/category-routes');
+const wareHouse = require('./routes/warehouse-routes');
+const importExport = require('./routes/import-export-routes');
+const bestTopConfig = require('./routes/best-top-config-routes');
 
 app.use('/auth', localLogin);
 app.use('/auth', googleLogin);
@@ -54,5 +57,9 @@ app.use('/auth', facebookLogin);
 app.use('/show', profile);
 app.use('/product', checkToken, isAdmin, product);
 app.use('/category', checkToken, isAdmin, category);
+app.use('/wareHouse', checkToken, isAdmin, wareHouse);
+app.use('/importExport', checkToken, isAdmin, importExport);
+app.use('/bestTopConfig', checkToken, isAdmin, bestTopConfig);
+
 
 app.listen(port, () => console.log('%c port', 'color: #f2ceb6', port));

@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var importExportProductSchema = new Schema({
-  product: Schema.Types.ObjectId,
+  warehouse: { type: Schema.Types.ObjectId, ref: 'WarehouseModel' },
   type: {
     type: String,
     enum: [
@@ -12,9 +12,8 @@ var importExportProductSchema = new Schema({
       '3c9472a8-cd85-46fa-8036-64ec4b0b1405', // export
     ],
   },
-  pcs: { type: Number, default: 0},
+  qty: { type: Number, default: 0 },
   reason: { type: String },
-  price: {type: Number},
   // Filtering
   activated: { type: Boolean, default: true },
   deleted: { type: Boolean, default: false },
@@ -25,4 +24,8 @@ var importExportProductSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('import-export-product', importExportProductSchema);
+module.exports = mongoose.model(
+  'ImportExportModel',
+  importExportProductSchema,
+  'import-export'
+);

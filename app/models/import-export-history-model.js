@@ -3,8 +3,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var newsSchema = new Schema({
-  pictureUrl: { type: String },
+var importExportHistorySchema = new Schema({
+  warehouse: { type: Schema.Types.ObjectId, ref: 'WarehouseModel' },
+  type: { type: String },
+  qty: { type: Number, default: 0 },
+  reason: { type: String },
   // Filtering
   activated: { type: Boolean, default: true },
   deleted: { type: Boolean, default: false },
@@ -15,4 +18,8 @@ var newsSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('NewsModel', newsSchema, 'news');
+module.exports = mongoose.model(
+  'ImportExportHistoryModel',
+  importExportHistorySchema,
+  'import-export-histories'
+);

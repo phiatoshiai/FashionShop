@@ -15,5 +15,5 @@ var categorySchema = new Schema({
   updatedBy: { type: String },
   updatedAt: { type: Date, default: Date.now },
 });
-const CategoryModel = mongoose.model('categories', categorySchema);
+const CategoryModel = mongoose.model('CategoryModel', categorySchema, 'categories');
 module.exports = CategoryModel;
