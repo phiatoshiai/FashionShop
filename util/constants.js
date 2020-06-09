@@ -3,6 +3,21 @@ module.exports = {
   TIMEZONE_DEFAULT: 'Asia/Ho_Chi_Minh',
   SKIP_DEFAULT: 0,
   LIMIT_DEFAULT: 25,
+  LIMIT_TOP_DEFAULT: 10,
+  TIME: {
+    TODAY: '1',
+    YESTERDAY: '2',
+    SEVEN_DAYS_AGO: '3',
+    FOURTEEN_DAYS_AGO: '4',
+    THIRTY_DAYS_AGO: '5',
+    THIS_MONTH: '6',
+    LAST_MONTH: '7',
+    THIS_WEEK: '8',
+    OPTION: '9',
+    TREE_MONTHS_AGO: '10',
+    THIS_QUARTER: '11',
+    THIS_YEAR: '12',
+  },
   TYPE: {
     IMPORT_EXPORT: {
       IMPORT: '2c5a6627-2451-4ae6-86fa-05f9c567a6b3',

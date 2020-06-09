@@ -50,6 +50,7 @@ const category = require('./routes/category-routes');
 const wareHouse = require('./routes/warehouse-routes');
 const importExport = require('./routes/import-export-routes');
 const bestTopConfig = require('./routes/best-top-config-routes');
+const adminReport = require('./routes/admin-report-routes');
 
 app.use('/auth', localLogin);
 app.use('/auth', googleLogin);
@@ -60,6 +61,6 @@ app.use('/category', checkToken, isAdmin, category);
 app.use('/wareHouse', checkToken, isAdmin, wareHouse);
 app.use('/importExport', checkToken, isAdmin, importExport);
 app.use('/bestTopConfig', checkToken, isAdmin, bestTopConfig);
-
+app.use('/adminReport', adminReport);
 
 app.listen(port, () => console.log('%c port', 'color: #f2ceb6', port));
